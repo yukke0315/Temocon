@@ -1,0 +1,43 @@
+<!DOCUTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Temocon</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Temocon</h1>
+    
+    <button class="btn" onclick="send('click')">CLICK</button>
+    <button class="btn" onclick="send('hello')">HELLO</button>
+
+    <div id="status" class="status">未接続...</div>
+
+    <script>
+        // socket作成
+        // IPアドレス・ポートを自動取得
+        const ws = new WebSocket(`ws://${window.location.host}/ws`);
+        const statusDiv = document.getElementById("status");
+
+        // 接続時
+        ws.onopen = () => {
+            statusDiv.innerText = "ONLINE";
+            statusDiv.style.color = "#0f0";
+        };
+
+        // 切断時
+        ws.onclose = () => {
+            statusDiv.innerText = "OFFLINE";
+            statusDiv.style.color = "#f00";
+        };
+
+        // コマンド送信
+        function send(command) {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(command);
+            }
+        }
+    </script>
+</body>
+</html>>

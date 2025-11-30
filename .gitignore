@@ -1,0 +1,15 @@
+# Pythonのコンパイル済みファイル
+__pycache__/
+*.py[cod]
+
+# 仮想環境フォルダ
+.venv/
+venv/
+env/
+
+# OSのシステムファイル
+.DS_Store
+Thumbs.db
+
+# 環境変数
+.env

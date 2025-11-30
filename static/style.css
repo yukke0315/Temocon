@@ -1,0 +1,34 @@
+/* スマホで見やすくするための基本スタイル */
+body {
+    background-color: #222;
+    color: white;
+    font-family: sans-serif;
+    text-align: center;
+    padding: 20px;
+    overscroll-behavior: none;   /* 引っ張って更新を無効化 */
+}
+
+h1 { margin-bottom: 30px; font-size: 24px; }
+
+/* ボタンのデザイン */
+.btn {
+    display: block;
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(145deg, #333, #444);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 5px 5px 10px #1a1a1a, -5px -5px 10px #333;
+    transition: transform 0.1s;
+}
+
+.btn:active {
+    transform: scale(0.98);
+    box-shadow: inset 5px 5px 10px #1a1a1a, inset -5px -5px 10px #333;
+}
+
+.status { font-size: 14px; color: #888; margin-top: 20px; }
