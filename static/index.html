@@ -1,4 +1,4 @@
-<!DOCUTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -9,8 +9,12 @@
 <body>
     <h1>Temocon</h1>
     
-    <button class="btn" onclick="send('click')">CLICK</button>
-    <button class="btn" onclick="send('hello')">HELLO</button>
+    <div class="control-panel">
+        <!-- 操作ボタン -->
+        <button class="btn" onclick="send('volume_up')">Volume UP</button>
+        <button class="btn" onclick="send('volume_down')">Volume Down</button>
+        <button class="btn" onclick="send('play_pause')">Play / Pause</button>
+    </div>
 
     <div id="status" class="status">未接続...</div>
 
@@ -40,4 +44,4 @@
         }
     </script>
 </body>
-</html>>
+</html>
