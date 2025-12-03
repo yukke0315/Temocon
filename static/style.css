@@ -1,14 +1,36 @@
-/* スマホで見やすくするための基本スタイル */
 body {
     background-color: #222;
     color: white;
     font-family: sans-serif;
     text-align: center;
+    
+    margin: 0;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    box-sizing: border-box;
+    
+    overflow: hidden; 
     overscroll-behavior: none;   /* 引っ張って更新を無効化 */
 }
 
-h1 { margin-bottom: 30px; font-size: 24px; }
+h1 {
+    flex: 0 0 auto;
+    margin: 10px 0 30px 0;
+    font-size: 24px;
+}
+
+.control-panel {
+    flex: 0 0 auto;
+}
+
+.status {
+    flex: 0 0 auto;
+    margin: 10px 0;
+    font-size: 14px;
+    color: #888;
+}
 
 /* ボタンのデザイン */
 .btn {
@@ -31,4 +53,26 @@ h1 { margin-bottom: 30px; font-size: 24px; }
     box-shadow: inset 5px 5px 10px #1a1a1a, inset -5px -5px 10px #333;
 }
 
-.status { font-size: 14px; color: #888; margin-top: 20px; }
+/* タッチパッドエリア */
+.trackpad-area {
+    flex: 1 1 auto;
+    background-color: #333;
+    border-radius: 15px;
+    border: 2px dashed #555;
+    margin-top: 20px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-weight: bold;
+
+    /* この領域でブラウザをスクロールさせない */
+    touch-action: none; 
+    user-select: none;
+}
+
+.trackpad-area:active {
+    background-color: #3a3a3a;
+    border-color: #777;
+}
