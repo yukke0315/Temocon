@@ -27,6 +27,12 @@
         // IPアドレス・ポートを自動取得
         const ws = new WebSocket(`ws://${window.location.host}/ws`);
         const statusDiv = document.getElementById("status");
+        // タッチパッドのエリア
+        const trackpad = document.getElementById("trackpad");
+
+        // 前回の位置
+        let last_x = 0;
+        let last_y = 0;
 
         // 接続時
         ws.onopen = () => {
@@ -46,6 +52,44 @@
                 ws.send(command);
             }
         }
+
+        // タッチパッド操作
+        // 最初の基準点
+        trackpad.addEventListener("touchstrt", (e) => {
+            // 指は1本だけ
+            if (e.touches.length === 1) {
+                last_x = e.touches[0].clientX;
+                last_y = e.touches[0].clientY;
+            }
+        }, { passive: true });
+
+        // 指の移動時
+        trackpad.addEventListener("touchmove", (e) => {
+            e.preventDefault(); // スクロール防止
+            // 指は1本だけ
+            if (e.touches.length === 1 && ws.readyState === WebSocket.OPEN) {
+                const current_x = e.touches[0].clientX;
+                const current_y = e.touches[0].clientY;
+
+                // Δ計算
+                const dx = current_x - last_x;
+                const dy = current_y - last_y;
+
+                // 送信（JSON形式）
+                const data = JSON.stringify({ x: dx, y: dy });
+                ws.send(data);
+
+                // 更新
+                last_x = current_x;
+                last_y = current_y;
+            }
+        }, { passive: true });
+
+        // タッチ
+        trackpad.addEventListener("click", (e) => {
+            send("left_click");
+        }, { passive: true });
+
     </script>
 </body>
 </html>
