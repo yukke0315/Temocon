@@ -31,8 +31,8 @@
         const trackpad = document.getElementById("trackpad");
 
         // 前回の位置
-        let last_x = 0;
-        let last_y = 0;
+        let last_x = null;
+        let last_y = null;
 
         // 接続時
         ws.onopen = () => {
@@ -55,13 +55,13 @@
 
         // タッチパッド操作
         // 最初の基準点
-        trackpad.addEventListener("touchstrt", (e) => {
+        trackpad.addEventListener("touchstart", (e) => {
             // 指は1本だけ
             if (e.touches.length === 1) {
                 last_x = e.touches[0].clientX;
                 last_y = e.touches[0].clientY;
             }
-        }, { passive: true });
+        }, { passive: false });
 
         // 指の移動時
         trackpad.addEventListener("touchmove", (e) => {
@@ -83,12 +83,19 @@
                 last_x = current_x;
                 last_y = current_y;
             }
-        }, { passive: true });
+        }, { passive: false });
+
+        // 指を離したとき
+        trackpad.addEventListener("touchend", (e) => {
+            // リセット
+            last_x = 0;
+            last_y = 0;
+        }, { passive: false });
 
         // タッチ
         trackpad.addEventListener("click", (e) => {
             send("left_click");
-        }, { passive: true });
+        });
 
     </script>
 </body>

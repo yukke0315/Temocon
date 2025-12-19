@@ -8,6 +8,7 @@ app = FastAPI()
 
 # 安全装置オフ
 pag.FAILSAFE = False
+pag.PAUSE = 0   # デフォの0.1s待機を無効に（カクカク解消）
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
