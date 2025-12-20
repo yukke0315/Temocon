@@ -2,6 +2,8 @@ from fastapi import FastAPI, WebSocket
 from fastapi.staticfiles import StaticFiles
 import pyautogui as pag   # os操作をするため(ツールチャンネル参照)
 import json
+import webbrowser   # ブラウザ起動用
+import subprocess   # アプリ起動用
 
 # インスタンス作成
 app = FastAPI()
@@ -57,6 +59,14 @@ async def websocket_endpoint(websocket: WebSocket):
                 elif data == "left_click":
                     pag.click()
                     print("Click")
+
+                elif data == "open_youtube":
+                    webbrowser.open("https://www.youtube.com/")
+                    print("Open YouTube")
+
+                elif data == "open_notepad":
+                    subprocess.Popen("notepad.exe")
+                    print("Open Notepad")
             
     except Exception as e:
         # エラー処理(切断)
