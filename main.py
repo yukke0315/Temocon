@@ -10,7 +10,10 @@ app = FastAPI()
 
 # 安全装置オフ
 pag.FAILSAFE = False
-pag.PAUSE = 0   # デフォの0.1s待機を無効に（カクカク解消）
+pag.PAUSE = 0   # デフォの0.1s待機を無効に(カクカク解消)
+
+# password練習用
+SERVER_PASS = "1234"
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -18,11 +21,24 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     print("接続完了")
 
+    is_verified = False
+
     try:
         while True:
             # スマホからのデータ待ちすいせい
             # awaitだと、待ちの間は他の処理もできる
             data = await websocket.receive_text()
+
+            # パスワード認証
+            if not is_verified:
+                if data == SERVER_PASS:
+                    is_verified = True
+                    await websocket.send_text("Auth_success")
+                    print("Auth success")
+                else:
+                    await websocket.send_text("Auth_fail")
+                    print("Auth fail")
+                continue
 
             # 受信データが座標（JSON）かコマンドか判定
             if data.startswith("{"):
