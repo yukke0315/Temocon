@@ -36,10 +36,29 @@
         let last_x = null;
         let last_y = null;
 
+        // 認証
+        let isAuthenticaed = false;
+
         // 接続時
         ws.onopen = () => {
+            const password = prompt("パスワードを入力してください");
+            ws.send(JSON.stringify({
+                type: "auth",
+                password: password
+            }));
             statusDiv.innerText = "ONLINE";
             statusDiv.style.color = "#0f0";
+        };
+
+        // auth成功時
+        ws.onmessage = (event) => {
+            if (event.data === "auth_ok") {
+                isAuthenticated = true;
+                statusDiv.innerText = "AUTH OK";
+                statusDiv.style.color = "#0f0";
+            } else if (event.data === "auth_ng") {
+                alert("パスワードが違います");
+            }
         };
 
         // 切断時
@@ -50,6 +69,9 @@
 
         // コマンド送信
         function send(command) {
+            if (!isAuthenticated) {
+                return;
+            }
             if (ws.readyState === WebSocket.OPEN) {
                 ws.send(command);
             }

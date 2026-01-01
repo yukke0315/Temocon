@@ -2,6 +2,7 @@ from fastapi import FastAPI, WebSocket
 from fastapi.staticfiles import StaticFiles
 import pyautogui as pag   # os操作をするため(ツールチャンネル参照)
 import json
+import os
 import webbrowser   # ブラウザ起動用
 import subprocess   # アプリ起動用
 
@@ -12,8 +13,8 @@ app = FastAPI()
 pag.FAILSAFE = False
 pag.PAUSE = 0   # デフォの0.1s待機を無効に(カクカク解消)
 
-# password練習用
-SERVER_PASS = "1234"
+# 認証用パスワード
+PASSWORD = os.getenv("TEMOCON_PASSWORD", "devpass")
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -21,7 +22,8 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     print("接続完了")
 
-    is_verified = False
+    # 認証用
+    authenticated = False
 
     try:
         while True:
@@ -29,15 +31,16 @@ async def websocket_endpoint(websocket: WebSocket):
             # awaitだと、待ちの間は他の処理もできる
             data = await websocket.receive_text()
 
-            # パスワード認証
-            if not is_verified:
-                if data == SERVER_PASS:
-                    is_verified = True
-                    await websocket.send_text("Auth_success")
-                    print("Auth success")
-                else:
-                    await websocket.send_text("Auth_fail")
-                    print("Auth fail")
+            if not authenticated:
+                try:
+                    msg = json.loads(data)
+                    if msg.get("type") == "auth" and msg.get("password") == PASSWORD:
+                        authenticated = True
+                        await websocket.send_text("auth_ok")
+                    else:
+                        await websocket.send_text("auth_ng")
+                except:
+                    await websocket.send_text("auth_ng")
                 continue
 
             # 受信データが座標（JSON）かコマンドか判定
