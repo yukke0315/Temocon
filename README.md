@@ -10,20 +10,32 @@ PC操作時に物理的な距離がある場面（ベッド・プレゼン等）
 
 ## 3. Architecture
 - フロントエンド: HTML / JavaScript（スマートフォン）
-- バックエンド: FastAPI（WebSocket）
+- バックエンド: Python / FastAPI
 - 通信方式: WebSocket（双方向・リアルタイム）
+- OS操作: pyautogui
+
+WebSocket経由でJSON形式のデータをやり取りする。
 
 ## 4. WebSocket Communication
-- タッチ操作は相対座標として送信
-- JSONデータとコマンド文字列を分けて処理
+- 通信の形式はJSONに統一
+- 操作の種類は'type'参照
+  - 'auth': 認証
+  - 'move': マウス移動
+  - 'command': 操作コマンド系
+- タッチ（マウス）操作は相対座標として送信
+- 認証後はセッショントークンを付与し、以降の操作で検証
 
 ## 5. Implemented Features
 - マウス移動（相対座標）
 - 左クリック
 - 音量操作
 - 再生/停止
+- パスワード認証
+- セッショントークンによる操作認証
 
 ## 6. Limitations & Future Work
-- 認証機能は未実装（ローカル利用前提）
+- 認証機能はシンプルなパスワード方式（要強化）
 - セキュリティ対策は今後の課題
 - コードの責務分離改善予定
+- 通信がHTTPSに未対応
+- UI / UX 改善
