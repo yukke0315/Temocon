@@ -22,7 +22,7 @@
         TOUCH PAD
     </div>
 
-    <div id="status" class="status">未接続...</div>
+    <div id="status" class="status">Not connected</div>
 
     <script>
         // socket作成
@@ -36,10 +36,36 @@
         let last_x = null;
         let last_y = null;
 
+        // 認証
+        let isAuthenticated = false;
+        let sessionToken = null;
+
         // 接続時
         ws.onopen = () => {
+            const password = prompt("Enter password:");
+            ws.send(JSON.stringify({
+                type: "auth",
+                password: password
+            }));
             statusDiv.innerText = "ONLINE";
             statusDiv.style.color = "#0f0";
+        };
+
+        // auth成功時
+        ws.onmessage = (event) => {
+            const msg = JSON.parse(event.data);   // JSONをJSのオブジェクトに変換
+
+            if (msg.type === "auth_ok") {
+                isAuthenticated = true;
+                sessionToken = msg.session_token;   // セッショントークンを保存
+
+                statusDiv.innerText = "AUTH OK";
+                statusDiv.style.color = "#0f0";
+            } else if (msg.type === "auth_ng") {
+                statusDiv.innerText = "AUTH NG";
+                statusDiv.style.color = "#f00";
+                alert("Auth failed. Please reload and try again.");
+            }
         };
 
         // 切断時
@@ -50,8 +76,15 @@
 
         // コマンド送信
         function send(command) {
+            if (!isAuthenticated) {
+                return;
+            }
             if (ws.readyState === WebSocket.OPEN) {
-                ws.send(command);
+                ws.send(JSON.stringify({
+                    type: "command",
+                    command: command,
+                    session_token: sessionToken
+                }));
             }
         }
 
@@ -78,7 +111,12 @@
                 const dy = current_y - last_y;
 
                 // 送信（JSON形式）
-                const data = JSON.stringify({ x: dx, y: dy });
+                const data = JSON.stringify({
+                    type: "move",
+                    x: dx, 
+                    y: dy,
+                    session_token: sessionToken
+                });
                 ws.send(data);
 
                 // 更新
