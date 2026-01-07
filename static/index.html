@@ -7,22 +7,42 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Temocon</h1>
-    
-    <div class="control-panel">
-        <!-- 操作ボタン -->
-        <button class="btn" onclick="send('volume_up')">Volume UP</button>
-        <button class="btn" onclick="send('volume_down')">Volume Down</button>
-        <button class="btn" onclick="send('play_pause')">Play / Pause</button>
-        <button class="btn" onclick="send('open_youtube')">Open YouTube</button>
-        <button class="btn" onclick="send('open_notepad')">Open Notepad</button>
-    </div>
+    <div class="app">
+    <header class="header">
+        <div class="title">Temocon</div>
+        <div class="status online" id="status">● Online</div>
+    </header>
 
-    <div id="trackpad" class="trackpad-area">
-        TOUCH PAD
-    </div>
+    <!-- トラックパッド -->
+    <main class="trackpad" id="trackpad"></main>
 
-    <div id="status" class="status">Not connected</div>
+    <!-- 下部操作エリア -->
+    <footer class="controls">
+        <div class="pointer-controls">
+            <button class="btn mode">Drag</button>
+            <button class="btn mode active">Scroll</button>
+            <button class="btn mode">Right Click</button>
+        </div>
+
+        <div class="media-controls">
+            <button class="circle" onclick="send('volume_down')">Vol -</button>
+            <button class="circle" onclick="send('volume_up')">Vol +</button>
+            <button class="circle" onclick="send('play_pause')">Play/Pause</button>
+            <button class="circle" onclick="send('mute')">Mute</button>
+        </div>
+
+        <div class="launcher">
+            <button class="app-btn" onclick="send('open_youtube')">YouTube</button>
+            <button class="app-btn" onclick="send('open_notepad')">Notepad</button>
+            <button class="app-btn" onclick="send('open_terminal')">Terminal</button>
+            <button class="app-btn" onclick="send('open_browser')">Browser</button>
+            <button class="app-btn empty">+</button>
+            <button class="app-btn empty">+</button>
+            <button class="app-btn empty">+</button>
+            <button class="app-btn empty">+</button>
+        </div>
+    </footer>
+    </div>
 
     <script>
         // socket作成
