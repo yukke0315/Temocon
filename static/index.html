@@ -10,7 +10,9 @@
     <div class="app">
     <header class="header">
         <div class="title">Temocon</div>
-        <div class="status online" id="status">● Online</div>
+        <div class="status online" id="status">
+            <span class="status-dot"></span> <span class="status-text">Connecting...</span>
+        </div>
     </header>
 
     <!-- トラックパッド -->
@@ -49,6 +51,7 @@
         // IPアドレス・ポートを自動取得
         const ws = new WebSocket(`ws://${window.location.host}/ws`);
         const statusDiv = document.getElementById("status");
+        const statusText = statusDiv.querySelector(".status-text");
         // タッチパッドのエリア
         const trackpad = document.getElementById("trackpad");
 
@@ -67,8 +70,7 @@
                 type: "auth",
                 password: password
             }));
-            statusDiv.innerText = "ONLINE";
-            statusDiv.style.color = "#0f0";
+            statusText.textContent = "Connecting...";
         };
 
         // auth成功時
@@ -79,19 +81,22 @@
                 isAuthenticated = true;
                 sessionToken = msg.session_token;   // セッショントークンを保存
 
-                statusDiv.innerText = "AUTH OK";
-                statusDiv.style.color = "#0f0";
+                statusDiv.classList.remove("offline");
+                statusDiv.classList.add("online");
+                statusText.textContent = "Online";
             } else if (msg.type === "auth_ng") {
-                statusDiv.innerText = "AUTH NG";
-                statusDiv.style.color = "#f00";
+                statusDiv.classList.remove("online");
+                statusDiv.classList.add("offline");
+                statusText.textContent = "Auth Failed";
                 alert("Auth failed. Please reload and try again.");
             }
         };
 
         // 切断時
         ws.onclose = () => {
-            statusDiv.innerText = "OFFLINE";
-            statusDiv.style.color = "#f00";
+            statusDiv.classList.remove("online");
+            statusDiv.classList.add("offline");
+            statusText.textContent = "Offline";
         };
 
         // コマンド送信

@@ -2,6 +2,7 @@
     --bg-main: #2E3440;
     --bg-panel: #3B4252;
     --text-main: #D8DEE9;
+    --text-muted: #81A1C1;
     --accent: #88C0D0;
 
     --status-online: #A3BE8C;
@@ -36,8 +37,30 @@ body {
     border-radius: 0 0 12px 12px;
 }
 
-.status.online {
-    color: var(--status-online);
+.status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-dot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--text-muted);
+    transition: background-color 0.3s;
+}
+
+.status.online .status-dot {
+    background-color: var(--status-online);
+}
+
+.status.offline .status-dot {
+    background-color: var(--status-offline);
 }
 
 .trackpad {
