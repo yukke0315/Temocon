@@ -24,17 +24,26 @@ body {
 .app {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100dvh;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
+/* ヘッダー部分 */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    padding: 12px 16px;
+    padding: 16px 20px;
     background: var(--bg-panel);
-    border-radius: 0 0 12px 12px;
+    border-radius: 12px 12px 12px 12px;
+}
+
+.title {
+    font-weight: 450;
+    font-size: 18px;
+    letter-spacing: 0.5px;
 }
 
 .status {
@@ -63,13 +72,14 @@ body {
     background-color: var(--status-offline);
 }
 
+/* トラックパッド部分 */
 .trackpad {
     flex: 1;
     margin: 12px;
     background: var(--bg-panel);
     border-radius: 16px;
     touch-action: none;   /* スクロールやズームの禁止 */
-    user-select: none;  /* テキスト選択の禁止 */
+    user-select: none;   /* テキスト選択の禁止 */
 }
 
 .controls {
