@@ -104,6 +104,10 @@ async def websocket_endpoint(websocket: WebSocket):
                     pag.press("playpause")
                     print("play/pause")
 
+                elif cmd == "mute":
+                    pag.press("volumemute")
+                    print("Mute")
+
                 elif cmd == "left_click":
                     pag.click()
                     print("Click")
@@ -115,7 +119,15 @@ async def websocket_endpoint(websocket: WebSocket):
                 elif cmd == "open_notepad":
                     subprocess.Popen("notepad.exe")
                     print("Open Notepad")
-            
+
+                elif cmd == "open_terminal":
+                    subprocess.Popen(["cmd.exe"], creationflags=subprocess.CREATE_NEW_CONSOLE)
+                    print("Open Terminal")
+
+                elif cmd == "open_browser":
+                    webbrowser.open("https://www.google.com/")
+                    print("Open Browser")
+
     except Exception as e:
         # エラー処理(切断)
         print("切断")
