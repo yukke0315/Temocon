@@ -104,6 +104,10 @@ async def websocket_endpoint(websocket: WebSocket):
                     pag.press("playpause")
                     print("play/pause")
 
+                elif cmd == "mute":
+                    pag.press("volumemute")
+                    print("Mute")
+
                 elif cmd == "left_click":
                     pag.click()
                     print("Click")
