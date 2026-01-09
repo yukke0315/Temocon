@@ -153,8 +153,8 @@
         // 指を離したとき
         trackpad.addEventListener("touchend", (e) => {
             // リセット
-            last_x = 0;
-            last_y = 0;
+            last_x = null;
+            last_y = null;
         }, { passive: false });
 
         // タッチ
@@ -163,5 +163,5 @@
         });
 
     </script>
-</body>
+</body ontouchstart="">
 </html>
