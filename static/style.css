@@ -1,78 +1,217 @@
-body {
-    background-color: #222;
-    color: white;
-    font-family: sans-serif;
-    text-align: center;
-    
-    margin: 0;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+:root {
+    --bg-main: #2E3440;
+    --bg-panel: #3B4252;
+    --text-main: #D8DEE9;
+    --text-muted: #81A1C1;
+    --accent: #88C0D0;
+
+    --status-online: #A3BE8C;
+    --status-offline: #BF616A;
+}
+
+* {
     box-sizing: border-box;
-    
-    overflow: hidden; 
-    overscroll-behavior: none;   /* 引っ張って更新を無効化 */
-}
-
-h1 {
-    flex: 0 0 auto;
-    margin: 10px 0 30px 0;
-    font-size: 24px;
-}
-
-.control-panel {
-    flex: 0 0 auto;
-}
-
-.status {
-    flex: 0 0 auto;
-    margin: 10px 0;
-    font-size: 14px;
-    color: #888;
-}
-
-/* ボタンのデザイン */
-.btn {
-    display: block;
-    width: 100%;
-    padding: 20px;
-    margin-bottom: 20px;
-    font-size: 20px;
-    font-weight: bold;
-    color: white;
-    background: linear-gradient(145deg, #333, #444);
-    border: none;
-    border-radius: 15px;
-    box-shadow: 5px 5px 10px #1a1a1a, -5px -5px 10px #333;
-    transition: transform 0.1s;
-}
-
-.btn:active {
-    transform: scale(0.98);
-    box-shadow: inset 5px 5px 10px #1a1a1a, inset -5px -5px 10px #333;
-}
-
-/* タッチパッドエリア */
-.trackpad-area {
-    flex: 1 1 auto;
-    background-color: #333;
-    border-radius: 15px;
-    border: 2px dashed #555;
-    margin-top: 20px;
-    
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #666;
-    font-weight: bold;
-
-    /* この領域でブラウザをスクロールさせない */
-    touch-action: none; 
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
     user-select: none;
 }
 
-.trackpad-area:active {
-    background-color: #3a3a3a;
-    border-color: #777;
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body {
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.app {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ヘッダー部分 */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--bg-panel);
+    border-radius: 12px 12px 12px 12px;
+}
+
+.title {
+    font-weight: 450;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-dot {
+    gap: 6px;
+    font-size: 13px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--text-muted);
+    transition: background-color 0.3s;
+}
+
+.status.online .status-dot {
+    background-color: var(--status-online);
+}
+
+.status.offline .status-dot {
+    background-color: var(--status-offline);
+}
+
+/* トラックパッド部分 */
+.trackpad {
+    flex: 1;
+    margin: 12px;
+    background: var(--bg-panel);
+    border-radius: 16px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    touch-action: none;   /* スクロールやズームの禁止 */
+    user-select: none;   /* テキスト選択の禁止 */
+}
+
+.controls {
+    padding: 14px;
+    margin: 0 10px 10px;
+    background: rgba(59, 66, 82, 0.6);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* モード切り替えボタン(Drag/Scroll/Right Click) */
+.pointer-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.btn.mode {
+    background: rgba(76, 86, 106, 0.45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: 999px;
+    padding: 10px 0;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08),
+                0 4px 12px rgba(0,0,0,0.25);
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s;
+}
+
+.btn.mode.active {
+    transition: none;
+    background: var(--accent);
+    color: var(--bg-main);
+    box-shadow: 0 4px 8px rgba(136, 192, 208, 0.4);
+    transform: scale(0.96);
+}
+
+.pointer-controls button {
+    flex: 1;
+}
+
+/* メディアコントロールボタン */
+.media-controls {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+    place-items: center;
+}
+
+.circle {    
+    display: flex;
+    width: 70px;
+    height: 70px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--bg-panel);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: var(--text-main);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: background 0.1s ease, box-shadow 0.1s ease;
+}
+
+.circle:active {
+    transform: translateY(1px);
+    transition: none;
+    transform: translateY(2px) scale(0.95);
+    background: var(--accent);
+    color: var(--bg-main);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15),
+                0 3px 8px rgba(0,0,0,0.3);
+}
+
+/* ランチャー部分 */
+.launcher {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.app-btn {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 16px;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.app-btn:active {
+    transition: none;
+    transform: scale(0.90);
+    background-color: rgba(255,255,255,0.05);
+}
+
+.launcher button.empty {
+    background: transparent;
+    border: 2px dashed #5E81AC;
+    color: #5E81AC;
+}
+
+button {
+    background: #4C566A;
+    color: var(--text-main);
+    border: none;
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 14px;
+}
+
+button.active {
+    background: var(--accent);
+    color: #2E3440;
 }
