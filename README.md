@@ -10,19 +10,19 @@ PC操作時に物理的な距離がある場面（ベッド・プレゼン等）
 
 ## 3. How to Use
 1. FastAPIサーバーを起動
+
 2. 同一ネットワーク上のスマートフォンからアクセス
 起動すると、PCへの接続が始まります。  
 パスワード入力が求められます。（今は仮の固定パスワード）
-![IMG_9311](https://github.com/user-attachments/assets/8a589fc6-9908-4c90-8488-bf7696061246)
+<img src="https://github.com/user-attachments/assets/8a589fc6-9908-4c90-8488-bf7696061246" width="30%">
+
 3. 表示されたUIで操作
 接続が完了すると、以下のようなリモート操作画面が表示されます。
 - マウス操作（~~Drag~~ / Scroll / ~~Right Click~~）
 - 音量操作（Vol ± / Mute）
 - メディア操作（Play / Pause）
 - アプリ起動（YouTube / Notepad / Terminal / Browser）
-![IMG_9310](https://github.com/user-attachments/assets/59df9aa1-6e2a-4235-a6e8-50061097ddbf)
-
-
+<img src="https://github.com/user-attachments/assets/59df9aa1-6e2a-4235-a6e8-50061097ddbf" width="30%">
 
 ## 4. Architecture
 - フロントエンド: HTML / JavaScript（スマートフォン）
