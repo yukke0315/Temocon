@@ -59,37 +59,11 @@
         let last_x = null;
         let last_y = null;
 
-        // 認証
-        let isAuthenticated = false;
-        let sessionToken = null;
-
-        // 接続時
+        // 接続
         ws.onopen = () => {
-            const password = prompt("Enter password:");
-            ws.send(JSON.stringify({
-                type: "auth",
-                password: password
-            }));
-            statusText.textContent = "Connecting...";
-        };
-
-        // auth成功時
-        ws.onmessage = (event) => {
-            const msg = JSON.parse(event.data);   // JSONをJSのオブジェクトに変換
-
-            if (msg.type === "auth_ok") {
-                isAuthenticated = true;
-                sessionToken = msg.session_token;   // セッショントークンを保存
-
-                statusDiv.classList.remove("offline");
-                statusDiv.classList.add("online");
-                statusText.textContent = "Online";
-            } else if (msg.type === "auth_ng") {
-                statusDiv.classList.remove("online");
-                statusDiv.classList.add("offline");
-                statusText.textContent = "Auth Failed";
-                alert("Auth failed. Please reload and try again.");
-            }
+            statusDiv.classList.remove("offline");
+            statusDiv.classList.add("online");
+            statusText.textContent = "Online";
         };
 
         // 切断時
@@ -101,14 +75,10 @@
 
         // コマンド送信
         function send(command) {
-            if (!isAuthenticated) {
-                return;
-            }
             if (ws.readyState === WebSocket.OPEN) {
                 ws.send(JSON.stringify({
                     type: "command",
                     command: command,
-                    session_token: sessionToken
                 }));
             }
         }
@@ -140,7 +110,6 @@
                     type: "move",
                     x: dx, 
                     y: dy,
-                    session_token: sessionToken
                 });
                 ws.send(data);
 

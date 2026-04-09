@@ -1,4 +1,5 @@
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, Form, Request, status
+from fastapi.responses import RedirectResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 import pyautogui as pag   # os操作をするため(ツールチャンネル参照)
 import json
@@ -15,22 +16,53 @@ app = FastAPI()
 pag.FAILSAFE = False
 pag.PAUSE = 0   # デフォの0.1s待機を無効に(カクカク解消)
 
-# 認証用パスワード
+# 認証用パスワードとCookie設定
 PASSWORD = os.getenv("TEMOCON_PASSWORD", "devpass")
+COOKIE_NAME = "temocon_session"
+COOKIE_VALUE = str(uuid.uuid4())
 
 # セッション管理用
 SESSION_TIMEOUT = 60   # 試験用60秒
 
+# -ログイン画面-
+@app.get("/login")
+async def get_login():
+    return FileResponse("static/login.html")
+
+# -ログイン処理-
+@app.post("/login")
+async def post_login(password: str = Form(...)):
+    if password == PASSWORD:
+        response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+        response.set_cookie(key=COOKIE_NAME, value=COOKIE_VALUE, httponly=True)
+        return response
+    else:
+        return RedirectResponse(url="/login", status_code=status.HTTP_302_FOUND)
+
+# -トップ-
+@app.get("/")
+async def get_index(request: Request):
+    cookie = request.cookies.get(COOKIE_NAME)
+    if cookie != COOKIE_VALUE:
+        return RedirectResponse(url="/login")
+    return FileResponse("static/index.html")
+
+# -WS処理-
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     # Cのpthreと違って１スレッドでやるぽい？
+
+    # このタイミングでもチェック
+    cookie = websocket.cookies.get(COOKIE_NAME)
+    if cookie != COOKIE_VALUE:
+        await websocket.close()
+        return
+    
     await websocket.accept()
     print("接続完了")
 
-    # 認証用
-    authenticated = False
-    session_token = None
-    last_active_time = None
+    # 最初の基準
+    last_active_time = time.time()
 
     try:
         while True:
@@ -38,31 +70,9 @@ async def websocket_endpoint(websocket: WebSocket):
             # awaitだと、待ちの間は他の処理もできる
             data = await websocket.receive_text()
 
-            if not authenticated:
-                try:
-                    msg = json.loads(data)
-                    if msg.get("type") == "auth" and msg.get("password") == PASSWORD:
-                        session_token = str(uuid.uuid4())
-                        authenticated = True
-                        last_active_time = time.time()
-                        await websocket.send_text(
-                            json.dumps({"type": "auth_ok", "session_token": session_token})
-                        )
-                    else:
-                        await websocket.send_text(json.dumps({"type": "auth_ng"}))
-                except:
-                    await websocket.send_text(json.dumps({"type": "auth_ng"}))
-                continue
-
-            # 認証後の処理
             try:
                 msg = json.loads(data)   # JSON文字列を辞書型に変換
             except:
-                continue
-
-            # tokenチェック
-            if msg.get("session_token") != session_token:
-                print("invalid token")
                 continue
 
             # セッションタイムアウトチェック
@@ -127,10 +137,10 @@ async def websocket_endpoint(websocket: WebSocket):
                 elif cmd == "open_browser":
                     webbrowser.open("https://www.google.com/")
                     print("Open Browser")
-
+            
     except Exception as e:
         # エラー処理(切断)
         print("切断")
 
 # 指定フォルダの中身をWeb配信してくれる
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+app.mount("/", StaticFiles(directory="static"), name="static")
