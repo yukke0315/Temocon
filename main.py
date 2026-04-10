@@ -8,9 +8,40 @@ import uuid   # トークン用
 import time
 import webbrowser   # ブラウザ起動用
 import subprocess   # アプリ起動用
+import socket
+import qrcode
 
 # インスタンス作成
 app = FastAPI()
+
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+    except Exception:
+        ip = "127.0.0.1"
+    finally:
+        s.close()
+    return ip
+
+@app.on_event("startup")
+async def startup_event():
+    ip = get_ip()
+    url = f"http://{ip}:8000"
+    
+    print(f"\n Scan QRcode")
+    print(f" URL: {url}\n")
+    
+    # QRコードを生成・表示
+    qr = qrcode.QRCode()
+    qr.add_data(url)
+    qr.make(fit=True)
+    qr.print_ascii(invert=True)
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    print("\n shutdown")
 
 # 安全装置オフ
 pag.FAILSAFE = False
