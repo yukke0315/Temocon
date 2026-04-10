@@ -95,7 +95,17 @@ async def websocket_endpoint(websocket: WebSocket):
                     pag.moveRel(x * sensitivity, y * sensitivity)
 
                 except Exception as e:
-                    print(f"Error: {e}")
+                    print(f"Move Error: {e}")
+
+            elif msg.get("type") == "scroll":
+                try:
+                    dy = msg.get("dy", 0)
+                    scroll_sensitivity = 4.0
+
+                    # 指を下（dy負）で下スクロール
+                    pag.scroll(int(dy * scroll_sensitivity))
+                except Exception as e:
+                    print(f"Scroll Error: {e}")
 
             elif msg.get("type") == "command":
                 # コマンド処理
